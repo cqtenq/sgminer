@@ -1294,7 +1294,7 @@ static bool opencl_thread_prepare(struct thr_info *thr)
 	if (!cgpu->name)
 		cgpu->name = strdup(name);
 	if (!cgpu->kernelname)
-		cgpu->kernelname = strdup("ckolivas");
+		cgpu->kernelname = strdup("neoscrypt");
 
 	applog(LOG_INFO, "initCl() finished. Found %s", name);
 	cgtime(&now);
