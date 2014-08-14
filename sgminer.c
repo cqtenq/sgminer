@@ -57,6 +57,7 @@ char *curly = ":D";
 
 #include "algorithm.h"
 #include "scrypt.h"
+#include "neoscrypt.h"
 #include "pool.h"
 
 #if defined(unix) || defined(__APPLE__)
@@ -1133,7 +1134,7 @@ static char *set_null(const char __maybe_unused *arg)
 static struct opt_table opt_config_table[] = {
 	OPT_WITH_ARG("--algorithm",
 		     set_algo, NULL, NULL,
-		     "Set mining algorithm and most common defaults, default: scrypt"),
+		     "Set mining algorithm and most common defaults, default: neoscrypt"),
 	OPT_WITH_ARG("--api-allow",
 		     set_api_allow, NULL, NULL,
 		     "Allow API access only to the given list of [G:]IP[/Prefix] addresses[/subnets]"),
@@ -2253,7 +2254,7 @@ static void curses_print_status(void)
 	unsigned short int line = 0;
 
 	wattron(statuswin, A_BOLD);
-	cg_mvwprintw(statuswin, line, 0, PACKAGE " " VERSION " - Started: %s", datestamp);
+	cg_mvwprintw(statuswin, line, 0, PACKAGE " " VERSION " - Algorithm: %s Started: %s",opt_algorithm->name, datestamp);
 	wattroff(statuswin, A_BOLD);
 
 	mvwhline(statuswin, ++line, 0, '-', 80);
@@ -4474,7 +4475,7 @@ void write_config(FILE *fcfg)
 	}
 	if (opt_removedisabled)
 		fprintf(fcfg, ",\n\"remove-disabled\" : true");
-	if (strcmp(opt_algorithm->name, "scrypt") != 0)
+	if (strcmp(opt_algorithm->name, "neoscrypt") != 0)
 		fprintf(fcfg, ",\n\"algorithm\" : \"%s\"", json_escape(opt_algorithm->name));
 	if (opt_api_allow)
 		fprintf(fcfg, ",\n\"api-allow\" : \"%s\"", json_escape(opt_api_allow));
@@ -8009,7 +8010,7 @@ int main(int argc, char *argv[])
 
 	/* Default algorithm specified in algorithm.c ATM */
 	opt_algorithm = (algorithm_t *)alloca(sizeof(algorithm_t));
-	set_algorithm(opt_algorithm, "scrypt");
+	set_algorithm(opt_algorithm, "neoscrypt");
 
 	devcursor = 8;
 	logstart = devcursor + 1;
@@ -8046,7 +8047,7 @@ int main(int argc, char *argv[])
 		struct pool *pool;
 
 		// FIXME: executes always (leftover from SHA256d days)
-		quit(1, "Cannot use benchmark mode with scrypt");
+		quit(1, "Cannot use benchmark mode with neoscrypt");
 		pool = add_pool();
 		pool->rpc_url = (char *)malloc(255);
 		strcpy(pool->rpc_url, "Benchmark");
